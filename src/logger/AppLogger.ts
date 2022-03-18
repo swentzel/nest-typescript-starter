@@ -45,7 +45,7 @@ export class AppLogger extends Logger {
     super(context);
   }
 
-  public log(message: string) {
+  public async log(message: string) {
     const coloredContext = format
       .colorize()
       .colorize('info', `[${this.context}]`);
@@ -58,10 +58,10 @@ export class AppLogger extends Logger {
     }
 
     // Loggly
-    this.sendToLoggly('info', message);
+    await this.sendToLoggly('info', message);
   }
 
-  public error(message: string | any, trace?: string) {
+  public async error(message: string | any, trace?: string) {
     const coloredContext = format
       .colorize()
       .colorize('error', `[${this.context}]`);
@@ -76,10 +76,10 @@ export class AppLogger extends Logger {
     }
 
     // Loggly
-    this.sendToLoggly('error', message);
+    await this.sendToLoggly('error', message);
   }
 
-  public warn(message: string | any) {
+  public async warn(message: string | any) {
     const coloredContext = format
       .colorize()
       .colorize('warn', `[${this.context}]`);
@@ -92,7 +92,7 @@ export class AppLogger extends Logger {
     }
 
     // Loggly
-    this.sendToLoggly('warn', message);
+    await this.sendToLoggly('warn', message);
   }
 
   public async debug(message: string | any) {
@@ -111,7 +111,7 @@ export class AppLogger extends Logger {
     await this.sendToLoggly('debug', message);
   }
 
-  public verbose(message: string | any) {
+  public async verbose(message: string | any) {
     const coloredContext = format
       .colorize()
       .colorize('verbose', `[${this.context}]`);
@@ -124,7 +124,7 @@ export class AppLogger extends Logger {
     }
 
     // Loggly
-    this.sendToLoggly('verbose', message);
+    await this.sendToLoggly('verbose', message);
   }
 
   public printLine() {
@@ -137,13 +137,17 @@ export class AppLogger extends Logger {
     console.log(line);
   }
 
-  public logRequest(request: Request, method?: string) {
-    this.log(`${request.method} ${request.url} | ${method} | start`);
+  public async logRequest(request: Request, method?: string) {
+    await this.log(`${request.method} ${request.url} | ${method} | start`);
   }
 
-  public traceRequest(request: Request, handler?: string, runtime?: number) {
+  public async traceRequest(
+    request: Request,
+    handler?: string,
+    runtime?: number,
+  ) {
     const message = `${request.method} ${request.url} | ${handler} | done in ${runtime}ms`;
-    this.log(message);
+    await this.log(message);
 
     const logData: LogData = {
       context: this.context,
@@ -151,7 +155,7 @@ export class AppLogger extends Logger {
       message,
       runtime,
     };
-    this.sendToLoggly('info', message, logData);
+    await this.sendToLoggly('info', message, logData);
   }
 
   private async sendToLoggly(
