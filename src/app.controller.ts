@@ -10,9 +10,11 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    this.logger.debug(`Call hello World!`);
-    this.logger.debug(`Config is loaded: ${process.env.CONFIG_IS_LOADED}`);
+  async getHello(): Promise<string> {
+    await this.logger.debug(`Call hello World!`);
+    await this.logger.debug(
+      `Config is loaded: ${process.env.CONFIG_IS_LOADED}`,
+    );
     return this.appService.getHello();
   }
 }

@@ -95,7 +95,7 @@ export class AppLogger extends Logger {
     this.sendToLoggly('warn', message);
   }
 
-  public debug(message: string | any) {
+  public async debug(message: string | any) {
     const coloredContext = format
       .colorize()
       .colorize('debug', `[${this.context}]`);
@@ -108,7 +108,7 @@ export class AppLogger extends Logger {
     }
 
     // Loggly
-    this.sendToLoggly('debug', message);
+    await this.sendToLoggly('debug', message);
   }
 
   public verbose(message: string | any) {
